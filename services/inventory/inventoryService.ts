@@ -1,9 +1,16 @@
-'use server'
-import prisma from "@/app/services/prisma";
+import prisma from "@/services/prisma/prisma";
 
 import {InventoryItem} from "@prisma/client"
 
-export async function getAllInventoryItems(): Promise<InventoryItem[]> {
+export const InventoryItemService = {
+  get,
+  getAll,
+  create,
+  update,
+  remove,
+}
+
+export async function getAll(): Promise<InventoryItem[]> {
   return prisma.inventoryItem.findMany({
     orderBy: {
       name: 'asc',
@@ -11,11 +18,11 @@ export async function getAllInventoryItems(): Promise<InventoryItem[]> {
   });
 }
 
-export async function getInventoryItem(id: string): Promise<InventoryItem | null> {
+export async function get(id: string): Promise<InventoryItem | null> {
   return prisma.inventoryItem.findUnique({where: {id}});
 }
 
-export async function createInventoryItem(newItem: InventoryItem): Promise<InventoryItem> {
+export async function create(newItem: InventoryItem): Promise<InventoryItem> {
   const createdItem = prisma.inventoryItem.create({data: newItem});
 
   console.log(createdItem);
@@ -23,8 +30,8 @@ export async function createInventoryItem(newItem: InventoryItem): Promise<Inven
   return createdItem;
 }
 
-export async function updateInventoryItem(updatedItem: InventoryItem): Promise<InventoryItem> {
-  const item = await getInventoryItem(updatedItem.id);
+export async function update(updatedItem: InventoryItem): Promise<InventoryItem> {
+  const item = await get(updatedItem.id);
 
   if (!item) throw new Error("Item não encontrado.");
 
@@ -34,5 +41,9 @@ export async function updateInventoryItem(updatedItem: InventoryItem): Promise<I
       id: updatedItem.id,
     }
   });
+}
+
+export async function remove(id: string) {
+  return prisma.inventoryItem.delete({where: {id}});
 }
 

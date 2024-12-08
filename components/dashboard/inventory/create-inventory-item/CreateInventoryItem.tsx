@@ -10,10 +10,11 @@ export default function CreateInventoryItem() {
   )
 }
 
-export function TypographyH3({children}: Readonly<PropsWithChildren>) {
+function TypographyH3({children}: Readonly<PropsWithChildren>) {
   return (
     <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
       {children}
     </h3>
   )
 }
+

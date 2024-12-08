@@ -1,7 +1,5 @@
 "use client"
 
-import {useActionState, useRef} from "react";
-
 import {z} from "zod"
 import {zodResolver} from "@hookform/resolvers/zod"
 import {useForm} from "react-hook-form"
@@ -21,8 +19,10 @@ import {
 } from "@/components/ui/form"
 
 import {Input} from "@/components/ui/input"
+import axiosInstance from "@/lib/axiosInstance";
+import {useToast} from "@/hooks/use-toast";
+import {InventoryItem} from "@prisma/client";
 
-import {createInventoryItemFormSubmit} from "@/app/services/actions/CreateInventoryItemFormSubmit";
 
 const inventoryItemSchema = z.object({
   name: z.string().min(2).max(300),
@@ -30,20 +30,37 @@ const inventoryItemSchema = z.object({
 });
 
 function CreateInvetoryItemForm() {
-  const [state, formAction] = useActionState(createInventoryItemFormSubmit, {message: ""})
+  const {toast} = useToast();
   const form = useForm<z.infer<typeof inventoryItemSchema>>({
     resolver: zodResolver(inventoryItemSchema),
     defaultValues: {
       name: "",
       quantity: 0,
+    },
+  })
+
+  async function onSubmit(values: z.infer<typeof inventoryItemSchema>) {
+    try {
+      toast({title: "Creating inventory item...", description: "Please wait.",});
+
+      const response = await axiosInstance.post(`/inventory-items`, values);
+      const item: InventoryItem = response.data as InventoryItem;
+
+      toast({
+        title: `${item.name} Adicionado!`,
+        description: "O item foi criado com sucesso.",
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível adicionar o item.",
+      });
     }
-  });
-  const formRef = useRef<HTMLFormElement>(null);
+  }
+
   return (
     <Form {...form}>
-      <form action={formAction} onSubmit={form.handleSubmit(() => formRef.current?.submit())} ref={formRef}
-            className="space-y-8">
-        {state.message && <p className="text-red-700">{state.message}</p>}
+      <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           control={form.control}
           name="name"
@@ -62,6 +79,7 @@ function CreateInvetoryItemForm() {
         />
         <FormField
           control={form.control}
+
           name="quantity"
           render={({field}) => (
             <FormItem>
