@@ -1,41 +1,42 @@
-import {useState} from "react";
-
-import {useToast} from "@/hooks/use-toast";
-
-import {InventoryItem} from "@prisma/client";
-
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { InventoryItem } from "@prisma/client";
 import axiosInstance from "@/lib/axiosInstance";
+import useDebounce from "@/hooks/useDebounce";
 
 export default function useModifyQuantityCard(inventoryItem: InventoryItem) {
   const [quantity, setQuantity] = useState<number>(inventoryItem.quantity);
+  const debouncedQuantity = useDebounce(quantity, 500); // Debounce de 500ms
 
-  const {toast} = useToast();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (debouncedQuantity !== inventoryItem.quantity) {
+      updateQuantity(debouncedQuantity - inventoryItem.quantity);
+    }
+  }, [debouncedQuantity]);
 
   async function addQuantity() {
-    const factor = 1;
-    setQuantity(quantity + factor);
-    await updateQuantity(factor)
+    setQuantity(prev => prev + 1);
   }
 
   async function removeQuantity() {
-    const factor = -1;
-    setQuantity(quantity + factor);
-    await updateQuantity(factor)
+    setQuantity(prev => prev - 1);
   }
 
-  async function updateQuantity(factor: number) {
+  async function updateQuantity(change: number) {
     try {
-      toast({title: "Atualizando item de estoque...", description: "Aguarde."});
+      toast({ title: "Atualizando item de estoque...", description: "Aguarde." });
 
       await axiosInstance.put('/inventory-items', {
         ...inventoryItem,
-        quantity: quantity + factor
+        quantity: inventoryItem.quantity + change
       } as InventoryItem);
 
-      toast({title: "Item de estoque atualizado!", description: "O item foi atualizado com sucesso."});
+      toast({ title: "Item de estoque atualizado!", description: "O item foi atualizado com sucesso." });
 
     } catch (error) {
-      toast({title: "Erro", description: "Não foi possível atualizar o item de estoque."});
+      toast({ title: "Erro", description: "Não foi possível atualizar o item de estoque." });
 
     }
   }

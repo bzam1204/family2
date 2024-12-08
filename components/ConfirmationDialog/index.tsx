@@ -1,14 +1,30 @@
-import React from 'react';
+'use client'
+
+import React, { useState } from 'react';
+import { Loader } from 'lucide-react';
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void>;  // Update to support async onConfirm
   itemName: string;
 }
 
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onClose, onConfirm, itemName }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   if (!isOpen) return null;
+
+  const handleConfirmClick = async () => {
+    setIsLoading(true);
+    try {
+      await onConfirm(); // Wait for the onConfirm to perform its actions
+    } catch (error) {
+      console.error('Error during confirmation:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
@@ -19,8 +35,12 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({ isOpen, onClose
           <button onClick={onClose} className="mr-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">
             Cancelar
           </button>
-          <button onClick={onConfirm} className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-            Tenho sim
+          <button
+            onClick={handleConfirmClick}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex justify-center items-center"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader className="w-5 h-5 animate-spin"/> : "Tenho sim"}
           </button>
         </div>
       </div>
