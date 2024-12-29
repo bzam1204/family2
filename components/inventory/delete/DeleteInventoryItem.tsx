@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import axiosInstance from "@/lib/axiosInstance";
-import ConfirmationDialog from "@/components/ConfirmationDialog";
-import DeleteInventoryItemCard from "@/components/dashboard/inventory/delete/DeleteInventoryItemCard";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import DeleteInventoryItemCard from './DeleteInventoryItemCard';
+import ConfirmationDialog from '@/components/common/ConfirmationDialog';
+
 
 interface InventoryItem {
   id: string;

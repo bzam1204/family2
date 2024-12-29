@@ -1,4 +1,4 @@
-import ModifyQuantity from "@/components/dashboard/inventory/modify-quantity/ModifyQuantity";
+import ModifyQuantity from "@/components/inventory/modify-quantity/ModifyQuantity";
 
 function page () {
   return (

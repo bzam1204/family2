@@ -1,4 +1,3 @@
-"use client"
 import {PropsWithChildren} from "react";
 
 import {AppSidebar} from "@/components/app-sidebar"

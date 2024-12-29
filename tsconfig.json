@@ -21,6 +21,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/global-error.tsx", "app/api/auth/[kindeAuth]/route.ts", "app/dashboard", "components/views/DashboardView"],
   "exclude": ["node_modules"]
 }

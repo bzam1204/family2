@@ -1,4 +1,4 @@
-import CreateInventoryItem from "@/components/dashboard/inventory/create-inventory-item/CreateInventoryItem";
+import CreateInventoryItem from "@/components/inventory/create-inventory-item/CreateInventoryItem";
 
 function page () {
   return (
