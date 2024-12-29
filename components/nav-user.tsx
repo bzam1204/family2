@@ -29,6 +29,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components"
 
 export function NavUser({
   user,
@@ -102,10 +103,12 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            <LogoutLink>
+              <DropdownMenuItem>
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
+            </LogoutLink>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

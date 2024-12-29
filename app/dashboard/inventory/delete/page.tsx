@@ -1,4 +1,4 @@
-import DeleteInventoryItem from "@/components/dashboard/inventory/delete/DeleteInventoryItem";
+import DeleteInventoryItem from "@/components/inventory/delete/DeleteInventoryItem";
 
 function page () {
   return (

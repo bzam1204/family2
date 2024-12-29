@@ -1,7 +1,5 @@
-function page () {
-  return (
-    <p>dashboard</p>
-  )
-}
+import { DashboardView } from "@/components/dashboard/DashboardView";
 
-export default page;
+export default function DashboardPage() {
+  return <DashboardView />
+}

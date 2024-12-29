@@ -1,9 +1,12 @@
 'use client'
 
-import {InventoryItem} from "@prisma/client";
-import {Minus, Plus} from "lucide-react";
-import {Button} from "@/components/ui/button";
 import {Card} from "@/components/ui/card";
+import {Button} from "@/components/ui/button";
+
+import {Minus, Plus} from "lucide-react";
+
+import {InventoryItem} from "@prisma/client";
+
 import useModifyQuantityCard from "@/hooks/useModifyQuantityCard";
 
 interface ModifyQuantityCardProps {

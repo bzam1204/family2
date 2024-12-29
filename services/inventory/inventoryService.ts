@@ -1,4 +1,4 @@
-import prisma from "@/services/prisma/prisma";
+import prisma from "@/services/dbService";
 
 import {InventoryItem} from "@prisma/client"
 
