@@ -1,18 +1,28 @@
+'use client'
+
 import { useState, useEffect } from "react";
+
 import { useToast } from "@/hooks/use-toast";
+
 import { InventoryItem } from "@prisma/client";
-import axiosInstance from "@/lib/axiosInstance";
+
 import useDebounce from "@/hooks/useDebounce";
 
-export default function useModifyQuantityCard(inventoryItem: InventoryItem) {
-  const [quantity, setQuantity] = useState<number>(inventoryItem.quantity);
+import { useSelectFamilyContext } from "./context/useSelectFamilyContext";
+import { UpdateQuantityInventoryItemDto } from "@/lib/dto/UpdateQuantityInventoryItemDto";
+import { updateQuantityInventoryItem } from "@/actions/updateQuantityInventoryItem";
+
+export default function useModifyQuantityCard(item: InventoryItem) {
+  const [quantity, setQuantity] = useState<number>(item.quantity);
+  const [currentPrice, setCurrentPrice] = useState<number | null>(Number(item.mediaPrice));
   const debouncedQuantity = useDebounce(quantity, 500); // Debounce de 500ms
+  const { selectedFamily } = useSelectFamilyContext();
 
   const { toast } = useToast();
 
   useEffect(() => {
-    if (debouncedQuantity !== inventoryItem.quantity) {
-      updateQuantity(debouncedQuantity - inventoryItem.quantity);
+    if (debouncedQuantity !== item.quantity) {
+      updateQuantity(debouncedQuantity - item.quantity);
     }
   }, [debouncedQuantity]);
 
@@ -24,14 +34,24 @@ export default function useModifyQuantityCard(inventoryItem: InventoryItem) {
     setQuantity(prev => prev - 1);
   }
 
+  function handleSetCurrentPrice(price: string) {
+    setCurrentPrice(Number(price));
+  }
+
   async function updateQuantity(change: number) {
     try {
       toast({ title: "Atualizando item de estoque...", description: "Aguarde." });
 
-      await axiosInstance.put('/inventory-items', {
-        ...inventoryItem,
-        quantity: inventoryItem.quantity + change
-      } as InventoryItem);
+      const data: UpdateQuantityInventoryItemDto = {
+        id: item.id,
+        quantity: item.quantity + change,
+        familyId: selectedFamily.id,
+        currentPrice: currentPrice
+      }
+
+      console.log({ data })
+
+      await updateQuantityInventoryItem(data)
 
       toast({ title: "Item de estoque atualizado!", description: "O item foi atualizado com sucesso." });
 
@@ -44,6 +64,8 @@ export default function useModifyQuantityCard(inventoryItem: InventoryItem) {
   return {
     quantity,
     addQuantity,
+    currentPrice,
     removeQuantity,
+    handleSetCurrentPrice,
   };
 }

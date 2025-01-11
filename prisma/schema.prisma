@@ -21,7 +21,7 @@ enum FamilyUserRole {
 
 model User {
   id              String       @id @default(uuid()) @db.Uuid
-  kindeId         String       
+  kindeId         String
   name            String
   email           String       @unique
   password        String
@@ -29,6 +29,7 @@ model User {
   updatedAt       DateTime     @updatedAt
   user            FamilyUser[]
   createdFamilies Family[]
+
   @@unique([kindeId, email])
 }
 
@@ -62,6 +63,7 @@ model InventoryItem {
   name          String
   description   String?
   mediaPrice    Decimal?
+  quantity      Int                            @default(0)
   createdAt     DateTime                       @default(now())
   updatedAt     DateTime                       @updatedAt
   modifications InventoryItemModificationLog[]
