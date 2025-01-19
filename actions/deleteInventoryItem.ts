@@ -1,10 +1,11 @@
 "use server";
 
-import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
+import { InventoryItemService } from "@/services/InventoryItemService";
+
 export async function deleteInventoryItem(id: string, familyId: string) {
-    const item = await db.inventoryItem.delete({ where: { id } });
+    const item = await InventoryItemService.remove(id);
 
     if (!item) throw new Error("Something Went Wrong");
 

@@ -39,6 +39,7 @@ model Family {
   creatorUserId                String                         @db.Uuid
   createdAt                    DateTime                       @default(now())
   updatedAt                    DateTime                       @updatedAt
+  isActive                     Boolean                        @default(true)
   families                     FamilyUser[]
   InventoryItem                InventoryItem[]
   InventoryItemModificationLog InventoryItemModificationLog[]
@@ -49,6 +50,7 @@ model FamilyUser {
   id       String         @id @default(uuid()) @db.Uuid
   userId   String         @db.Uuid
   familyId String         @db.Uuid
+  isActive Boolean        @default(true)
   role     FamilyUserRole @default(MEMBER)
   joinedAt DateTime       @default(now())
   user     User           @relation(fields: [userId], references: [id])
@@ -62,8 +64,10 @@ model InventoryItem {
   familyId      String                         @db.Uuid
   name          String
   description   String?
+  image_url     String?
   mediaPrice    Decimal?
   quantity      Int                            @default(0)
+  isActive      Boolean                        @default(true)
   createdAt     DateTime                       @default(now())
   updatedAt     DateTime                       @updatedAt
   modifications InventoryItemModificationLog[]
@@ -78,6 +82,7 @@ model InventoryItemModificationLog {
   familyId      String        @db.Uuid
   change        Int
   currentPrice  Decimal?
+  isActive      Boolean       @default(true)
   changedAt     DateTime      @default(now())
   Family        Family        @relation(fields: [familyId], references: [id])
   InventoryItem InventoryItem @relation(fields: [itemId], references: [id])

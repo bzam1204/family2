@@ -11,12 +11,12 @@ interface ModifyItemQuantityViewProps {
 export function ModifyItemQuantityView({ familyId }: Readonly<ModifyItemQuantityViewProps>) {
 
   return (
-    <div className="w-full flex flex-col justify-start items-center p-4">
+    <main className="w-full flex flex-col justify-start items-center p-4">
       <TypographyH3>Modificar Quantidade</TypographyH3>
       <Suspense fallback={<LoadingSpinner />}>
         {/* @ts-expect-error Server Component */}
         <InventoryItemsList familyId={familyId} />
       </Suspense>
-    </div>
+    </main>
   )
 }

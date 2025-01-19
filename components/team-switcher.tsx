@@ -21,8 +21,9 @@ import {
 import Link from "next/link"
 import { Family } from "@prisma/client"
 import { useSelectFamilyContext } from "@/hooks/context/useSelectFamilyContext"
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 
-export function TeamSwitcher({ families }: Readonly<{ families: Family[] }>) {
+export function TeamSwitcher({ families } : Readonly<{ families : Family[] }>) {
   const { isMobile } = useSidebar()
   const { handleSelectFamily } = useSelectFamilyContext();
 
@@ -30,57 +31,59 @@ export function TeamSwitcher({ families }: Readonly<{ families: Family[] }>) {
 
   const [activeTeam, setActiveTeam] = React.useState(selectedFamily)
 
+  const auth = useKindeAuth();
+
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="grid flex-1 text-left text-sm leading-tight">
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              >
+                <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
                   {activeTeam.name}
                 </span>
-              </div>
-              <ChevronsUpDown className="ml-auto" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            align="start"
-            side={isMobile ? "bottom" : "right"}
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Famílias
-            </DropdownMenuLabel>
-            {families?.map((family) => (
-              <Link key={family.id} href={`/dashboard/family/${family.id}`}>
-                <DropdownMenuItem
-                  onClick={() => {
-                    setActiveTeam(family);
-                    handleSelectFamily(family);
-                  }}
-                  className="gap-2 p-2"
-                >
-                  {family.name}
+                </div>
+                <ChevronsUpDown className="ml-auto"/>
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                align="start"
+                side={isMobile ? "bottom" : "right"}
+                sideOffset={4}
+            >
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Famílias
+              </DropdownMenuLabel>
+              {families?.map((family) => (
+                  <Link key={family.id} href={`/dashboard/${auth?.user?.id}/family/${family.id}`}>
+                    <DropdownMenuItem
+                        onClick={() => {
+                          setActiveTeam(family);
+                          handleSelectFamily(family);
+                        }}
+                        className="gap-2 p-2"
+                    >
+                      {family.name}
+                    </DropdownMenuItem>
+                  </Link>
+              ))}
+              <DropdownMenuSeparator/>
+              <Link href={`${auth?.user?.id}/family/create`}>
+                <DropdownMenuItem className="gap-2 p-2">
+                  <div className="flex size-6 items-center justify-center rounded-md border bg-background">
+                    <Plus className="size-4"/>
+                  </div>
+                  <div className="font-medium text-muted-foreground">Criar Família</div>
                 </DropdownMenuItem>
               </Link>
-            ))}
-            <DropdownMenuSeparator />
-            <Link href='/dashboard/family/create'>
-              <DropdownMenuItem className="gap-2 p-2">
-                <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                  <Plus className="size-4" />
-                </div>
-                <div className="font-medium text-muted-foreground">Criar Família</div>
-              </DropdownMenuItem>
-            </Link>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
   )
 }

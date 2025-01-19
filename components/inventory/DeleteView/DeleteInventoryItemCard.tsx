@@ -4,7 +4,6 @@ import { InventoryItem } from '@prisma/client';
 
 interface DeleteInventoryItemCardProps {
   item: InventoryItem;
-  familyId: string;
 }
 
 export const DeleteInventoryItemCard: React.FC<DeleteInventoryItemCardProps> = ({ item }) => {

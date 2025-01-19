@@ -1,6 +1,6 @@
 export type UpdateQuantityInventoryItemDto = {
-    id: string;
-    familyId: string;
-    quantity: number;
-    currentPrice: number | null ;
+  id : string;
+  familyId : string;
+  quantity : number;
+  currentPrice : string | null;
 };

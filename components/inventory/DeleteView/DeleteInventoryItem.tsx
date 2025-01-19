@@ -1,23 +1,14 @@
 import React from 'react';
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-
-import db from '@/lib/db';
-
 import { DeleteInventoryItemCard } from './DeleteInventoryItemCard';
+import { InventoryItemService } from '@/services/InventoryItemService';
 
 interface DeleteInventoryItemProps {
   familyId: string
 }
 
 export async function DeleteInventoryItem({ familyId }: Readonly<DeleteInventoryItemProps>) {
-  const user = await getKindeServerSession().getUser();
-  const items = await db.inventoryItem.findMany({
-    where: {
-      familyId,
-      family: { families: { some: { user: { kindeId: user.id } } } }
-    }
-  })
+  const items = await InventoryItemService.getAllByFamilyId(familyId);
 
   return (
     <div className="p-4">
@@ -27,7 +18,7 @@ export async function DeleteInventoryItem({ familyId }: Readonly<DeleteInventory
       ) : (
         <ul className="flex flex-col gap-2 justify-center w-full p-4">
           {items.map(item => (
-            <DeleteInventoryItemCard key={item.id} item={item} familyId={familyId} />
+            <DeleteInventoryItemCard key={item.id} item={item} />
           ))}
         </ul>
       )}
