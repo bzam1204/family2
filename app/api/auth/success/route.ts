@@ -37,5 +37,5 @@ export async function GET() {
     });
   }
 
-  return NextResponse.redirect(`http://localhost:3000/dashboard/${user.id}`);
+  return NextResponse.redirect(`${process.env.KINDE_SITE_URL}/dashboard/${user.id}`);
 }
