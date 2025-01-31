@@ -9,7 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -31,7 +30,7 @@ export function TeamSwitcher({ families } : Readonly<{ families : Family[] }>) {
 
   const [activeTeam, setActiveTeam] = React.useState(selectedFamily)
 
-  const auth = useKindeAuth();
+  const { user } = useKindeAuth();
 
   return (
       <SidebarMenu>
@@ -60,7 +59,7 @@ export function TeamSwitcher({ families } : Readonly<{ families : Family[] }>) {
                 Famílias
               </DropdownMenuLabel>
               {families?.map((family) => (
-                  <Link key={family.id} href={`/dashboard/${auth?.user?.id}/family/${family.id}`}>
+                  <Link key={family.id} href={`/dashboard/${user?.id}/family/${family.id}`}>
                     <DropdownMenuItem
                         onClick={() => {
                           setActiveTeam(family);
@@ -73,7 +72,7 @@ export function TeamSwitcher({ families } : Readonly<{ families : Family[] }>) {
                   </Link>
               ))}
               <DropdownMenuSeparator/>
-              <Link href={`${auth?.user?.id}/family/create`}>
+              <Link href={`${user?.id}/family/create`}>
                 <DropdownMenuItem className="gap-2 p-2">
                   <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                     <Plus className="size-4"/>

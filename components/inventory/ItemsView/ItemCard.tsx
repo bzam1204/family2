@@ -2,7 +2,6 @@ import { SerializedInventoryItem } from "@/lib/types/SerializedInventoryItem";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatToDecimal } from "@/lib/utils/formatToDecimal";
 import Image from "next/image";
-import { faker } from "@faker-js/faker";
 
 interface ItemCardProps {
   item : SerializedInventoryItem
