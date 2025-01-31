@@ -13,10 +13,77 @@ datasource db {
   url      = env("POSTGRES_PRISMA_URL")
 }
 
+enum FamilyUserRole {
+  HEAD
+  ADMIN
+  MEMBER
+}
+
+model User {
+  id              String       @id @default(uuid()) @db.Uuid
+  kindeId         String
+  name            String
+  email           String       @unique
+  password        String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  user            FamilyUser[]
+  createdFamilies Family[]
+
+  @@unique([kindeId, email])
+}
+
+model Family {
+  id                           String                         @id @default(uuid()) @db.Uuid
+  name                         String
+  creatorUserId                String                         @db.Uuid
+  createdAt                    DateTime                       @default(now())
+  updatedAt                    DateTime                       @updatedAt
+  isActive                     Boolean                        @default(true)
+  families                     FamilyUser[]
+  InventoryItem                InventoryItem[]
+  InventoryItemModificationLog InventoryItemModificationLog[]
+  user                         User                           @relation(fields: [creatorUserId], references: [id])
+}
+
+model FamilyUser {
+  id       String         @id @default(uuid()) @db.Uuid
+  userId   String         @db.Uuid
+  familyId String         @db.Uuid
+  isActive Boolean        @default(true)
+  role     FamilyUserRole @default(MEMBER)
+  joinedAt DateTime       @default(now())
+  user     User           @relation(fields: [userId], references: [id])
+  family   Family         @relation(fields: [familyId], references: [id])
+
+  @@unique([familyId, userId]) // Ensure a unique combination of family and user
+}
+
 model InventoryItem {
-  id        String   @id @default(uuid())
-  name      String
-  quantity  Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String                         @id @default(uuid()) @db.Uuid
+  familyId      String                         @db.Uuid
+  name          String
+  description   String?
+  image_url     String?
+  mediaPrice    Decimal?
+  quantity      Int                            @default(0)
+  isActive      Boolean                        @default(true)
+  createdAt     DateTime                       @default(now())
+  updatedAt     DateTime                       @updatedAt
+  modifications InventoryItemModificationLog[]
+  family        Family                         @relation(fields: [familyId], references: [id])
+
+  @@unique([id, familyId])
+}
+
+model InventoryItemModificationLog {
+  id            String        @id @default(uuid()) @db.Uuid
+  itemId        String        @db.Uuid
+  familyId      String        @db.Uuid
+  change        Int
+  currentPrice  Decimal?
+  isActive      Boolean       @default(true)
+  changedAt     DateTime      @default(now())
+  Family        Family        @relation(fields: [familyId], references: [id])
+  InventoryItem InventoryItem @relation(fields: [itemId], references: [id])
 }
