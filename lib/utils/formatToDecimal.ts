@@ -9,9 +9,5 @@ export function formatToDecimal( string : string ) : string {
     maximumFractionDigits : 2,
   } );
 
-  const res = formatter.format( number );
-
-  console.log( { res } )
-
-  return res;
+  return formatter.format( number );
 }

@@ -48,13 +48,14 @@ export function AppSidebar( { ...props } : React.ComponentProps<typeof Sidebar> 
           {
             title : "Modificar Quantidade",
             url : `/dashboard/${ auth?.user?.id }/family/${ selectedFamily.id }/inventory/modify-quantity`,
-          }, {
-            title : "Deletar Item",
-            url : `/dashboard/${ auth?.user?.id }/family/${ selectedFamily.id }/inventory/delete`,
           },
           {
             title : "Registro",
             url : `/dashboard/${ auth?.user?.id }/family/${ selectedFamily.id }/inventory/registry`
+          },
+          {
+            title : "Minhas Familias",
+            url : `/dashboard/${ auth?.user?.id }/family/my-families`
           }
         ],
       },

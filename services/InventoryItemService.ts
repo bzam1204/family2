@@ -16,7 +16,7 @@ interface IInventoryItemService {
 
   create( data : CreateInventoryItemDto ) : Promise<InventoryItem>;
 
-  update( data : UpdateInventoryItemDto ) : Promise<InventoryItem>;
+  update( data : UpdateInventoryItemDto) : Promise<InventoryItem>;
 
   updateQuantity(
       data : UpdateQuantityInventoryItemDto
@@ -49,7 +49,9 @@ export const InventoryItemService : IInventoryItemService = {
     if ( !item ) throw new Error( "Not found" );
 
     return await db.inventoryItem.update( {
-      data,
+      data : {
+        ...data, mediaPrice : item.mediaPrice ? new Decimal( item.mediaPrice ) : null,
+      },
       where : { id : data.id },
     } );
   },
@@ -84,21 +86,30 @@ export const InventoryItemService : IInventoryItemService = {
     if ( !item || !log ) throw new Error( "Something went wrong" );
 
     const mediaPriceUpdate = await db.$queryRaw<{ media : bigint | null }[]>`
-        SELECT PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY "currentPrice") AS "media"
+        SELECT AVG("currentPrice") AS "media"
         FROM "InventoryItemModificationLog"
-        WHERE "itemId" = ${ item.id }::uuid;
+        WHERE "itemId" = ${ item.id }::uuid
+        AND "currentPrice" > 0;
     `;
 
     if ( !mediaPriceUpdate ) throw new Error( "Something went wrong" );
 
+    console.log( {
+      fn : this.updateQuantity,
+      ["!mediaPriceUpdate[0].media"] : !mediaPriceUpdate[0].media
+    }, mediaPriceUpdate );
     if ( !mediaPriceUpdate[0].media ) {
       return item;
     }
 
-    await db.inventoryItem.update( {
+    const media_item = await db.inventoryItem.update( {
       where : { id : item.id },
       data : { mediaPrice : Number( mediaPriceUpdate[0].media ) },
     } );
+
+    if ( !media_item ) throw new Error( "Something went wrong" );
+
+    console.log( { fn : this.updateQuantity, media_item } );
 
     return item;
   },

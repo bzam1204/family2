@@ -10,6 +10,8 @@ export const modal = async (options: {
     title?: string;
     content?: React.ReactNode;
     onConfirm: (() => void) | (() => Promise<unknown>);
+    actionLabel?: string;
+    buttonless?: boolean;
 }) => {
     if (!modalInstance) {
         throw new Error(
