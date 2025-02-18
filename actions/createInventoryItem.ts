@@ -5,15 +5,19 @@ import { revalidatePath } from "next/cache";
 import { CreateInventoryItemDto } from "@/lib/dto/CreateInventoryItemDto";
 
 import { InventoryItemService } from "@/services/InventoryItemService";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { Decimal } from "@prisma/client/runtime/library";
 
-export async function createInventoryItem( values : CreateInventoryItemDto ) {
-  const item = await InventoryItemService.create( values );
-  const user = await getKindeServerSession().getUser()
+export async function createInventoryItem(
+    values: Omit<CreateInventoryItemDto, "mediaPrice"> & { mediaPrice: string }
+) {
+    const item = await InventoryItemService.create({
+        ...values,
+        mediaPrice: values.mediaPrice ? new Decimal(values.mediaPrice) : null,
+    });
 
-  if ( !item ) throw new Error( "Algo deu errado" );
+    if (!item) throw new Error("Algo deu errado");
 
-  revalidatePath( `./items` );
+    revalidatePath(`./items`);
 
-  return item;
+    return item;
 }

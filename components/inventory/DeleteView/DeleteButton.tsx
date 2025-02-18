@@ -17,7 +17,6 @@ interface DeleteButtonProps {
 }
 
 export function DeleteButton( { item } : Readonly<DeleteButtonProps> ) {
-  const { selectedFamily } = useSelectFamilyContext();
 
   return (
       <Button
