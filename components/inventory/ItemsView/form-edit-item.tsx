@@ -21,7 +21,7 @@ import { editInventoryItem } from "@/actions/editInventoryItem";
 import { formatToDecimal } from "@/lib/utils/formatToDecimal";
 import { SerializedInventoryItem } from "@/lib/types/SerializedInventoryItem";
 import { Button } from "@/components/ui/button";
-import { Pen, Plus } from "lucide-react";
+import { Pen } from "lucide-react";
 
 const inventoryItemSchema = z.object( {
   name : z.string().min( 2 ).max( 300 ),
@@ -86,7 +86,7 @@ export function EditItemForm( { item } : Readonly<EditItemFormProps> ) {
 
   return (
       <Form { ...form }>
-        <form className="space-y-8 flex flex-col" onSubmit={ form.handleSubmit( onSubmit ) }>
+        <form className=" flex flex-col gap-1 max-h-96  overflow-y-scroll px-1" onSubmit={ form.handleSubmit( onSubmit ) }>
           <FormField
               control={ form.control }
               name="name"
@@ -107,7 +107,7 @@ export function EditItemForm( { item } : Readonly<EditItemFormProps> ) {
               control={ form.control }
               name="description"
               render={ ( { field } ) => (
-                  <FormItem>
+                  <FormItem className="m-0">
                     <FormLabel>Descrição</FormLabel>
                     <FormControl>
                       <Input { ...field } value={ field.value ?? '' } />
